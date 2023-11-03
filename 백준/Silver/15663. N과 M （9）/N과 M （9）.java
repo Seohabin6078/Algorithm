@@ -1,69 +1,54 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private static int n;
-    private static int m;
-    private static int[] data;
-    private static int[] basket;
-    private static boolean[] vis;
-    private static List<int[]> list = new ArrayList<>();
-    private static StringBuilder sb = new StringBuilder();
-    public static void main(String[] args) throws IOException {
+    static int[] numArr;
+    static int[] out;
+    static boolean[] visited;
+    static int M;
+    static int N;
+
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        numArr = new int[N];
+        visited = new boolean[N];
+        out = new int[M];
+
         st = new StringTokenizer(br.readLine());
-        data = new int[n];
-        basket = new int[m];
-        vis = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            data[i] = Integer.parseInt(st.nextToken());
-        }
-        Arrays.sort(data);
+        for(int i = 0; i<N; i++)
+            numArr[i] = Integer.parseInt(st.nextToken());
+
+        Arrays.sort(numArr);
+
         dfs(0);
-        System.out.print(sb);
     }
 
-    private static void dfs(int depth) {
-        if (depth == m) {
-            if(!isExist()) {
-                for (int i = 0; i < m; i++) {
-                    sb.append(basket[i]).append(" ");
-                }
-                sb.append("\n");
-                int[] ints = Arrays.copyOf(basket, m);
-                list.add(ints);
-            }
-            return;
+    static void dfs(int cnt){
+        if(cnt == M){
+            for(int i = 0; i<M; i++)
+                System.out.print(out[i]+" ");
+            System.out.println();
         }
 
-        for (int i = 0; i < n; i++) {
-            if (!vis[i]) {
-                vis[i] = true;
-                basket[depth] = data[i];
-                dfs(depth + 1);
-                vis[i] = false;
-            }
-        }
-    }
+        else{
+            int before = 0;
+            for(int i = 0; i<N; i++){
+                if(visited[i])
+                    continue;
 
-    private static boolean isExist() {
-        for (int[] ints : list) {
-            boolean temp = true;
-            for (int i = 0; i < m; i++) {
-                if (ints[i] != basket[i]) {
-                    temp = false;
+                if(before != numArr[i]){
+                    visited[i] = true;
+                    out[cnt] = numArr[i];
+                    before = numArr[i];
+                    dfs(cnt+1);
+                    visited[i] = false;
                 }
             }
-            if(temp) return true;
         }
-        return false;
     }
 }
