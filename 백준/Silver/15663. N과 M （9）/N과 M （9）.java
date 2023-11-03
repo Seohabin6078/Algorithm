@@ -1,53 +1,50 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
-public class Main {
-    static int[] numArr;
-    static int[] out;
-    static boolean[] visited;
-    static int M;
-    static int N;
-
-    public static void main(String[] args) throws IOException{
+public class Main { // n과 m (9) 이 문제의 핵심은 같은 depth에서 같은 숫자를 넣으면 안된다.
+    private static int n;
+    private static int m;
+    private static int[] data;
+    private static int[] basket;
+    private static boolean[] vis;
+    private static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        numArr = new int[N];
-        visited = new boolean[N];
-        out = new int[M];
-
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i<N; i++)
-            numArr[i] = Integer.parseInt(st.nextToken());
-
-        Arrays.sort(numArr);
-
+        data = new int[n];
+        basket = new int[m];
+        vis = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = Integer.parseInt(st.nextToken());
+        }
+        Arrays.sort(data);
         dfs(0);
+        System.out.print(sb);
     }
 
-    static void dfs(int cnt){
-        if(cnt == M){
-            for(int i = 0; i<M; i++)
-                System.out.print(out[i]+" ");
-            System.out.println();
+    private static void dfs(int depth) {
+        if (depth == m) {
+            for (int i = 0; i < m; i++) {
+                sb.append(basket[i]).append(" ");
+            }
+            sb.append("\n");
+            return;
         }
 
-        else{
-            int before = 0;
-            for(int i = 0; i<N; i++){
-                if(visited[i])
-                    continue;
-
-                if(before != numArr[i]){
-                    visited[i] = true;
-                    out[cnt] = numArr[i];
-                    before = numArr[i];
-                    dfs(cnt+1);
-                    visited[i] = false;
-                }
+        int before = 0;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i] && before != data[i]) {
+                vis[i] = true;
+                basket[depth] = data[i];
+                before = data[i];
+                dfs(depth + 1);
+                vis[i] = false;
             }
         }
     }
